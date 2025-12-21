@@ -1,0 +1,8 @@
+fauthy
+authenticator
+*.enc
+secrets.enc
+.DS_Store
+*.swp
+*.swo
+*~
