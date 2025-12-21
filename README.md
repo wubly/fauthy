@@ -2,6 +2,21 @@
 
 minimal 2fa authenticator with local encrypted storage :D
 
+## install
+
+**arch linux:**
+```bash
+yay -S fauthy
+```
+
+**from source:**
+```bash
+git clone https://github.com/uIvPuGpT/fauthy.git
+cd fauthy
+go build -o fauthy
+./fauthy
+```
+
 ## structure
 ```
 fauthy/
