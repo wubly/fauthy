@@ -21,19 +21,26 @@ func (m model) View() string {
 		if m.errormsg != "" {
 			msg = m.errormsg
 		}
-		return inputview(title, maskinput(m.input), msg)
+		return inputview(m, title, maskinput(m.input), msg)
 	case confirmresetmode:
-		return resetview(m.input)
+		return resetview(m)
 	case addlabelmode:
-		return inputview("add label", m.input, "enter to confirm")
+		return inputview(m, "add label", m.input, "enter to confirm")
 	case addsecretmode:
-		return inputview("add secret", m.input, "enter to confirm")
+		return inputview(m, "add secret", m.input, "enter to confirm")
 	default:
 		return listview(m)
 	}
 }
 
-func resetview(input string) string {
+func resetview(m model) string {
+	w, h := m.width, m.height
+	if w == 0 {
+		w = 80
+	}
+	if h == 0 {
+		h = 24
+	}
 	content := lipgloss.JoinVertical(
 		lipgloss.Left,
 		titlestyle.Render("can't remember passphrase?"),
@@ -41,11 +48,11 @@ func resetview(input string) string {
 		"no way to recover without it.",
 		"start over?",
 		"",
-		inputstyle.Render(input),
+		inputstyle.Render(m.input),
 		mutedstyle.Render("y = yes, n = quit"),
 	)
 
-	return lipgloss.Place(50, 10, lipgloss.Center, lipgloss.Center, content)
+	return lipgloss.Place(w, h, lipgloss.Center, lipgloss.Center, content)
 }
 
 func maskinput(input string) string {
@@ -56,7 +63,14 @@ func maskinput(input string) string {
 	return masked
 }
 
-func inputview(title, input, hint string) string {
+func inputview(m model, title, input, hint string) string {
+	w, h := m.width, m.height
+	if w == 0 {
+		w = 80
+	}
+	if h == 0 {
+		h = 24
+	}
 	content := lipgloss.JoinVertical(
 		lipgloss.Left,
 		titlestyle.Render(title),
@@ -64,18 +78,24 @@ func inputview(title, input, hint string) string {
 		mutedstyle.Render(hint),
 	)
 
-	return lipgloss.Place(50, 10, lipgloss.Center, lipgloss.Center, content)
+	return lipgloss.Place(w, h, lipgloss.Center, lipgloss.Center, content)
 }
 
 func listview(m model) string {
 	var rows []string
 	now := time.Now()
+	maxLabel := 8
+	for _, e := range m.entries {
+		if l := len(e.label); l > maxLabel {
+			maxLabel = l
+		}
+	}
 
 	for _, e := range m.entries {
 		code, rem := totp.Generate(e.secret, now)
 		row := fmt.Sprintf(
-			"%-12s %s %2ds",
-			e.label,
+			"%-*s %s %2ds",
+			maxLabel, e.label,
 			codestyle.Render(code),
 			rem,
 		)
@@ -91,12 +111,19 @@ func listview(m model) string {
 		titlestyle.Render("fauthy"),
 		strings.Join(rows, "\n"),
 		"",
-		mutedstyle.Render("a add • q quit"),
+		mutedstyle.Render("a add • t theme • q quit"),
 	)
 
+	w, h := m.width, m.height
+	if w == 0 {
+		w = 80
+	}
+	if h == 0 {
+		h = 24
+	}
 	return lipgloss.Place(
-		m.width,
-		m.height,
+		w,
+		h,
 		lipgloss.Center,
 		lipgloss.Center,
 		content,

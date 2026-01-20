@@ -60,6 +60,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return m, nil
 
+		case "t":
+			// only toggle theme in view mode; otherwise treat as input
+			if m.mode == viewmode {
+				NextTheme()
+				return m, nil
+			}
+			m.input += "t"
+			return m, nil
+
 		case "enter":
 			switch m.mode {
 			case passphrasemode:

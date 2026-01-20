@@ -86,6 +86,7 @@ go build -o fauthy.exe
 
 ## keys
 - `a` = add new secret
+- `t` = toggle theme
 - `q` = quit
 - `ctrl+c` = force quit
 - text selection works (mouse disabled)
