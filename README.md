@@ -9,12 +9,23 @@ minimal 2fa authenticator with local encrypted storage :D
 yay -S fauthy
 ```
 
-**from source:**
+**from source (Linux/macOS):**
 ```bash
 git clone https://github.com/uIvPuGpT/fauthy.git
 cd fauthy
 go build -o fauthy
 ./fauthy
+```
+
+**windows:**
+```powershell
+git clone https://github.com/uIvPuGpT/fauthy.git
+cd fauthy
+# run without building
+go run .
+# or build an executable
+go build -o fauthy.exe
+./fauthy.exe
 ```
 
 ## structure
@@ -52,7 +63,9 @@ codes refresh every 30s
 - aes-256-gcm encryption
 - pbkdf2 key derivation (100k iterations)
 - passphrase-protected
-- file stored at `~/.config/fauthy/secrets.enc` with 0600 perms
+- storage location:
+    - Windows: `%AppData%/fauthy/secrets.enc` (e.g. `C:/Users/<you>/AppData/Roaming/fauthy/secrets.enc`)
+    - Linux/macOS: `~/.config/fauthy/secrets.enc` with 0600 perms
 - 5 wrong attempts → option to reset
 
 ## run
@@ -62,6 +75,15 @@ go build -o fauthy
 ./fauthy
 ```
 
+On Windows you can also:
+```powershell
+cd fauthy
+go run .
+# or
+go build -o fauthy.exe
+./fauthy.exe
+```
+
 ## keys
 - `a` = add new secret
 - `q` = quit
@@ -69,3 +91,7 @@ go build -o fauthy
 - text selection works (mouse disabled)
 
 paste your totp secrets directly in!
+
+## troubleshooting (windows)
+- If you tried `go run build`, use `go run .` to run or `go build` to compile.
+- For best rendering, use Windows Terminal or a modern terminal with ANSI support.
