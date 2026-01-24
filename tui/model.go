@@ -33,9 +33,10 @@ type model struct {
 	errormsg       string
 	failedattempts int
 
-	mode   mode
-	input  string
-	buffer entry
+	mode         mode
+	input        string
+	buffer       entry
+	lastactivity time.Time
 
 	width  int
 	height int
